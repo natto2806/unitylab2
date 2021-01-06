@@ -1,36 +1,48 @@
 ﻿using UnityEngine;
 using CreatorKitCode;
 
+
 public class SpawnerSample : MonoBehaviour
 {
     public GameObject ObjectToSpawn;
+    public int radius = 3;
 
-    void Start()
+    public class LootAngle
     {
-        int angle = 15;
-	    int radiant = 5;
-        Vector3 spawnPosition = transform.position;
+        int angle;
+        int step;
 
+        public LootAngle(int increment)
+        {
+            step = increment;
+            angle = 0;
+        }
+
+        public int NextAngle()
+        {
+            int currentAngle = angle;
+            angle = Helpers.WrapAngle(angle + step);
+            
+            return currentAngle;
+        }
+    }
+
+    void SpawnPotion(int angle)
+    {
         Vector3 direction = Quaternion.Euler(0, angle, 0) * Vector3.right;
-        spawnPosition = transform.position + direction * radiant;
-        Instantiate(ObjectToSpawn, spawnPosition, Quaternion.identity);
-
-        angle = 55;
-        direction = Quaternion.Euler(0, angle, 0) * Vector3.right;
-        spawnPosition = transform.position + direction * radiant;
-        Instantiate(ObjectToSpawn, spawnPosition, Quaternion.identity);
-
-        angle = 95;
-        direction = Quaternion.Euler(0, angle, 0) * Vector3.right;
-        spawnPosition = transform.position + direction * radiant;
-        Instantiate(ObjectToSpawn, spawnPosition, Quaternion.identity);
-
-        angle = 135;
-        direction = Quaternion.Euler(0, angle, 0) * Vector3.right;
-        spawnPosition = transform.position + direction * radiant;
+        Vector3 spawnPosition = transform.position + direction * radius;
         Instantiate(ObjectToSpawn, spawnPosition, Quaternion.identity);
     }
 
-    
+    void Start()
+    {
+        LootAngle myLootAngle = new LootAngle(45);
+
+        //every call will advance the angle!
+        SpawnPotion(myLootAngle.NextAngle());
+        SpawnPotion(myLootAngle.NextAngle());
+        SpawnPotion(myLootAngle.NextAngle());
+        SpawnPotion(myLootAngle.NextAngle());
+    }
 }
 
